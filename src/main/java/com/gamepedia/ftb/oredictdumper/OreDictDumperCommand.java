@@ -5,9 +5,10 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public class OreDictDumperCommand implements ICommand {
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length != 2 || !sender.getEntityWorld().isRemote)  {
             return;
         }
@@ -45,7 +46,7 @@ public class OreDictDumperCommand implements ICommand {
           abbreviation));
         for (String name : OreDictionary.getOreNames()) {
             for (ItemStack item : OreDictionary.getOres(name)) {
-                String modid = Item.itemRegistry.getNameForObject(item.getItem())
+                String modid = Item.REGISTRY.getNameForObject(item.getItem())
                   .getResourceDomain();
 
                 if (!id.equals(modid)) {
@@ -63,24 +64,24 @@ public class OreDictDumperCommand implements ICommand {
                 writer.append(s);
             }
             writer.close();
-            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries
+            msg = TextFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries
               .size(), abbreviation);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = EnumChatFormatting.RED + "IOException! Check logs for raw array!";
+            msg = TextFormatting.RED + "IOException! Check logs for raw array!";
         }
 
-        sender.addChatMessage(new ChatComponentText(msg));
+        sender.addChatMessage(new TextComponentString(msg));
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return true;
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 

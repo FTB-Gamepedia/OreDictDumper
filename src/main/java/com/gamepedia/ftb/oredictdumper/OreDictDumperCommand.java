@@ -1,11 +1,11 @@
 package com.gamepedia.ftb.oredictdumper;
 
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.oredict.OreDictionary;
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OreDictDumperCommand implements ICommand {
@@ -28,8 +29,8 @@ public class OreDictDumperCommand implements ICommand {
     }
 
     @Override
-    public List getCommandAliases() {
-        return null;
+    public List<String> getCommandAliases() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -44,11 +45,10 @@ public class OreDictDumperCommand implements ICommand {
           abbreviation));
         for (String name : OreDictionary.getOreNames()) {
             for (ItemStack item : OreDictionary.getOres(name)) {
-                @SuppressWarnings("deprecation")
-                ModContainer mod = GameData.findModOwner(GameData.getItemRegistry().getNameForObject(item.getItem()));
+                String modid = Item.itemRegistry.getNameForObject(item.getItem())
+                  .getResourceDomain();
 
-                String id1 = mod == null ? "minecraft" : mod.getModId();
-                if (!id.equals(id1)) {
+                if (!id.equals(modid)) {
                     continue;
                 }
                 entries.add(String.format("%s!%s!%s!!\n", name, item.getDisplayName(),
@@ -63,7 +63,8 @@ public class OreDictDumperCommand implements ICommand {
                 writer.append(s);
             }
             writer.close();
-            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries.size(), id);
+            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries
+              .size(), abbreviation);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
@@ -79,7 +80,7 @@ public class OreDictDumperCommand implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] options) {
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 
@@ -88,8 +89,9 @@ public class OreDictDumperCommand implements ICommand {
         return false;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
-    public int compareTo(@SuppressWarnings("NullableProblems") Object o) {
+    public int compareTo(ICommand o) {
         return 0;
     }
 }

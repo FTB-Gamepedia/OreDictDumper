@@ -1,10 +1,10 @@
 package com.gamepedia.ftb.oredictdumper;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "1.0.0")
+@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "2.0.0")
 public class OreDictDumperMod {
     @Mod.EventHandler
     public void registerCommand(FMLPostInitializationEvent event) {

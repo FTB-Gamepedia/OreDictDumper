@@ -63,7 +63,8 @@ public class OreDictDumperCommand implements ICommand {
                 writer.append(s);
             }
             writer.close();
-            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries.size(), id);
+            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries
+              .size(), abbreviation);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());

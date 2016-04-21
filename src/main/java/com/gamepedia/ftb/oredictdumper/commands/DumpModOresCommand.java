@@ -1,5 +1,8 @@
-package com.gamepedia.ftb.oredictdumper;
+package com.gamepedia.ftb.oredictdumper.commands;
 
+import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.client.Minecraft;
@@ -16,15 +19,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OreDictDumperCommand implements ICommand {
+public class DumpModOresCommand implements ICommand {
     @Override
     public String getCommandName() {
-        return "oredictdump";
+        return "dumpmodores";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "oredictdump <abbreviation> <modid>";
+        return "dumpmodores <abbreviation> <modid> [format]";
     }
 
     @Override
@@ -34,14 +37,22 @@ public class OreDictDumperCommand implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        if (args.length != 2 || !sender.getEntityWorld().isRemote)  {
+        if (args.length < 2 || !sender.getEntityWorld().isRemote)  {
             return;
         }
+
         String abbreviation = args[0].toUpperCase();
         String id = args[1];
-        ArrayList<String> entries = new ArrayList<>();
-        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("%s.txt",
-          abbreviation));
+        String format = "wiki";
+        if (args.length == 3) {
+            if (args[2].equalsIgnoreCase("csv")) {
+                format = "csv";
+            } else if (args[2].equalsIgnoreCase("json")) {
+                format = "json";
+            }
+        }
+
+        ArrayList<OreDictEntry> entries = new ArrayList<>();
         for (String name : OreDictionary.getOreNames()) {
             for (ItemStack item : OreDictionary.getOres(name)) {
                 @SuppressWarnings("deprecation")
@@ -51,20 +62,48 @@ public class OreDictDumperCommand implements ICommand {
                 if (!id.equals(id1)) {
                     continue;
                 }
-                entries.add(String.format("%s!%s!%s!!\n", name, item.getDisplayName(),
-                  abbreviation));
+                entries.add(new OreDictEntry(name, item.getDisplayName(), item.getItemDamage(), id1));
             }
         }
 
         String msg;
+        StringBuilder builder = new StringBuilder();
+        String extension = "txt";
+
+        switch (format) {
+            case "wiki": {
+                for (OreDictEntry entry : entries) {
+                    builder.append(String.format("%s!%s!%s!!", entry.tagName, entry.displayName, id));
+                }
+                extension = "txt";
+                break;
+            }
+            case "csv": {
+                builder.append("Tag,ItemName,Metadata,ModID\n");
+                for (OreDictEntry entry : entries) {
+                    builder.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName,
+                      entry.metadata, entry.modID));
+                }
+                extension = "csv";
+                break;
+            }
+            case "json": {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                builder.append(gson.toJson(entries));
+                extension = "json";
+                break;
+            }
+            default: {}
+        }
+
+        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("%s.%s",
+          abbreviation, extension));
         try {
             FileWriter writer = new FileWriter(dir);
-            for (String s : entries) {
-                writer.append(s);
-            }
+            writer.write(builder.toString());
             writer.close();
-            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries
-              .size(), abbreviation);
+            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries
+              .size(), abbreviation, extension);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());

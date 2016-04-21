@@ -104,8 +104,8 @@ public class DumpModOresCommand implements ICommand {
             FileWriter writer = new FileWriter(dir);
             writer.write(builder.toString());
             writer.close();
-            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.txt", entries
-              .size(), abbreviation);
+            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries
+              .size(), abbreviation, extension);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());

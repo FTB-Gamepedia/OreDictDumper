@@ -1,13 +1,16 @@
 package com.gamepedia.ftb.oredictdumper;
 
+import com.gamepedia.ftb.oredictdumper.commands.DumpAllOresCommand;
+import com.gamepedia.ftb.oredictdumper.commands.DumpModOresCommand;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "2.0.0")
+@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "2.1.0")
 public class OreDictDumperMod {
     @Mod.EventHandler
     public void registerCommand(FMLPostInitializationEvent event) {
-        ClientCommandHandler.instance.registerCommand(new OreDictDumperCommand());
+        ClientCommandHandler.instance.registerCommand(new DumpModOresCommand());
+        ClientCommandHandler.instance.registerCommand(new DumpAllOresCommand());
     }
 }

@@ -1,5 +1,6 @@
 package com.gamepedia.ftb.oredictdumper.commands;
 
+import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class DumpAllOresCommand implements ICommand {
-    public ArrayList<String> FORMATS = new ArrayList<String>() {{
+    public static final ArrayList<String> FORMATS = new ArrayList<String>() {{
         add("json");
         add("csv");
     }};
@@ -54,21 +55,8 @@ public class DumpAllOresCommand implements ICommand {
             return;
         }
 
-        ArrayList<OreDictEntry> entries = new ArrayList<>();
-        String[] names = OreDictionary.getOreNames();
-        for (String name : names) {
-            List<ItemStack> items = OreDictionary.getOres(name);
-            for (ItemStack item : items) {
-                String id = Item.REGISTRY.getNameForObject(item.getItem()).getResourceDomain();
-
-                OreDictEntry entry = new OreDictEntry(name, item.getDisplayName(),
-                  item.getItemDamage(), id);
-                entries.add(entry);
-            }
-        }
-
-        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("oredump.%s",
-          format));
+        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(null);
+        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("oredump.%s", format));
         StringBuilder string = new StringBuilder("");
 
         if (format.equals("json")) {
@@ -77,8 +65,8 @@ public class DumpAllOresCommand implements ICommand {
         } else if (format.equals("csv")) {
             string.append("Tag,ItemName,Metadata,ModID\n");
             for (OreDictEntry entry : entries) {
-                string.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName,
-                  entry.metadata, entry.modID));
+                string.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName, entry.metadata,
+                  entry.modID));
             }
         }
 
@@ -87,8 +75,7 @@ public class DumpAllOresCommand implements ICommand {
             FileWriter writer = new FileWriter(dir);
             writer.write(string.toString());
             writer.close();
-            msg = TextFormatting.GREEN +
-              String.format("Dumped %d entries to oredump.%s", entries.size(), format);
+            msg = TextFormatting.GREEN + String.format("Dumped %d entries to oredump.%s", entries.size(), format);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());

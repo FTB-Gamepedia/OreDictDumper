@@ -1,5 +1,6 @@
 package com.gamepedia.ftb.oredictdumper.commands;
 
+import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,19 +54,7 @@ public class DumpModOresCommand implements ICommand {
             }
         }
 
-        ArrayList<OreDictEntry> entries = new ArrayList<>();
-        for (String name : OreDictionary.getOreNames()) {
-            for (ItemStack item : OreDictionary.getOres(name)) {
-                String modid = Item.REGISTRY.getNameForObject(item.getItem())
-                  .getResourceDomain();
-
-                if (!id.equals(modid)) {
-                    continue;
-                }
-                entries.add(new OreDictEntry(name, item.getDisplayName(), item.getItemDamage(),
-                  modid));
-            }
-        }
+        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(id);
 
         String msg;
         StringBuilder builder = new StringBuilder();
@@ -73,16 +62,15 @@ public class DumpModOresCommand implements ICommand {
         switch (format) {
             case "wiki": {
                 for (OreDictEntry entry : entries) {
-                    builder.append(String.format("%s!%s!%s!!\n", entry.tagName,
-                      entry.displayName, abbreviation));
+                    builder.append(String.format("%s!%s!%s!!\n", entry.tagName, entry.displayName, abbreviation));
                 }
                 break;
             }
             case "csv": {
                 builder.append("Tag,ItemName,Metadata,ModID\n");
                 for (OreDictEntry entry : entries) {
-                    builder.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName,
-                      entry.metadata, entry.modID));
+                    builder.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName, entry.metadata,
+                      entry.modID));
                 }
                 extension = "csv";
                 break;
@@ -96,14 +84,13 @@ public class DumpModOresCommand implements ICommand {
             default: {}
         }
 
-        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("%s.%s",
-          abbreviation, extension));
+        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("%s.%s", abbreviation, extension));
         try {
             FileWriter writer = new FileWriter(dir);
             writer.write(builder.toString());
             writer.close();
-            msg = TextFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries
-              .size(), abbreviation, extension);
+            msg = TextFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries.size(), abbreviation,
+              extension);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());

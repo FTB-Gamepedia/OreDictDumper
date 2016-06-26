@@ -1,5 +1,6 @@
 package com.gamepedia.ftb.oredictdumper.commands;
 
+import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,19 +53,7 @@ public class DumpModOresCommand implements ICommand {
             }
         }
 
-        ArrayList<OreDictEntry> entries = new ArrayList<>();
-        for (String name : OreDictionary.getOreNames()) {
-            for (ItemStack item : OreDictionary.getOres(name)) {
-                @SuppressWarnings("deprecation")
-                ModContainer mod = GameData.findModOwner(GameData.getItemRegistry().getNameForObject(item.getItem()));
-
-                String id1 = mod == null ? "minecraft" : mod.getModId();
-                if (!id.equals(id1)) {
-                    continue;
-                }
-                entries.add(new OreDictEntry(name, item.getDisplayName(), item.getItemDamage(), id1));
-            }
-        }
+        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(id);
 
         String msg;
         StringBuilder builder = new StringBuilder();

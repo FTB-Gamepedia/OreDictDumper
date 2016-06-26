@@ -1,5 +1,6 @@
 package com.gamepedia.ftb.oredictdumper.commands;
 
+import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,19 +54,7 @@ public class DumpModOresCommand implements ICommand {
         }
 
 
-        ArrayList<OreDictEntry> entries = new ArrayList<>();
-        for (String name : OreDictionary.getOreNames()) {
-            for (ItemStack item : OreDictionary.getOres(name)) {
-                String modid = Item.itemRegistry.getNameForObject(item.getItem())
-                  .getResourceDomain();
-
-                if (!id.equals(modid)) {
-                    continue;
-                }
-                entries.add(new OreDictEntry(name, item.getDisplayName(), item.getItemDamage(),
-                  modid));
-            }
-        }
+        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(id);
 
         String msg;
         StringBuilder builder = new StringBuilder();

@@ -7,14 +7,13 @@ public class OreDictEntry {
     public int metadata;
 
     public OreDictEntry(String tag, String display, int meta, String mod) {
-        this.tagName = tag;
-        this.displayName = display;
-        this.metadata = meta;
-        this.modID = mod;
+        tagName = tag;
+        displayName = display;
+        metadata = meta;
+        modID = mod;
     }
 
     public String toString() {
-        return String.format("%s:%s@%s (%s)", this.modID, this.displayName, this.metadata,
-          this.tagName);
+        return String.format("%s:%s@%s (%s)", modID, displayName, metadata, tagName);
     }
 }

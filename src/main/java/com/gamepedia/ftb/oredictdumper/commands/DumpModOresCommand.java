@@ -62,7 +62,7 @@ public class DumpModOresCommand implements ICommand {
         switch (format) {
             case "wiki": {
                 for (OreDictEntry entry : entries) {
-                    builder.append(String.format("%s!%s!%s!!\n", entry.tagName, entry.displayName, abbreviation));
+                    builder.append(String.format("%s!%s!%s!\n", entry.tagName, entry.displayName, abbreviation));
                 }
                 break;
             }

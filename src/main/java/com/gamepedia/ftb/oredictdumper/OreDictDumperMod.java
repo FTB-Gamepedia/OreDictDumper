@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "2.1.1")
+@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "2.1.2")
 public class OreDictDumperMod {
     @Mod.EventHandler
     public void registerCommand(FMLPostInitializationEvent event) {

@@ -5,15 +5,13 @@ import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,7 +28,8 @@ public class DumpModOresCommand implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "dumpmodores <abbreviation> <modid> [format]";
+        // TODO: This is ugly, do something similar to DumpAllOresCommand
+        return I18n.format("commands.dumpmodores.usage", "wiki,csv,json");
     }
 
     @Override
@@ -89,12 +88,11 @@ public class DumpModOresCommand implements ICommand {
             FileWriter writer = new FileWriter(dir);
             writer.write(builder.toString());
             writer.close();
-            msg = TextFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries.size(), abbreviation,
-              extension);
+            msg = TextFormatting.GREEN + I18n.format("commands.oredictdumpgeneric.success", entries.size(), abbreviation, extension);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = TextFormatting.RED + "IOException! Check logs for raw array!";
+            msg = TextFormatting.RED + I18n.format("commands.oredictdumpgeneric.ioexception");
         }
 
         sender.addChatMessage(new TextComponentString(msg));
@@ -111,7 +109,7 @@ public class DumpModOresCommand implements ICommand {
     }
 
     @Override
-    public boolean isUsernameIndex(String[] p_82358_1_, int p_82358_2_) {
+    public boolean isUsernameIndex(String[] args, int index) {
         return false;
     }
 

@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -36,8 +37,12 @@ public class DumpModOresCommand implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        if (args.length < 2 || !sender.getEntityWorld().isRemote)  {
+        if (!sender.getEntityWorld().isRemote) {
             return;
+        }
+
+        if (args.length < 2)  {
+            throw new WrongUsageException("commands.dumpmodores.usage", "wiki,csv,json"); /* TODO */
         }
 
         String abbreviation = args[0].toUpperCase();

@@ -5,14 +5,12 @@ import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +27,8 @@ public class DumpModOresCommand implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "dumpmodores <abbreviation> <modid> [format]";
+        // TODO: This is ugly, do something similar to DumpAllOresCommand
+        return I18n.format("commands.dumpmodores.usage", "wiki,csv,json");
     }
 
     @Override
@@ -93,12 +92,11 @@ public class DumpModOresCommand implements ICommand {
             FileWriter writer = new FileWriter(dir);
             writer.write(builder.toString());
             writer.close();
-            msg = EnumChatFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries
-              .size(), abbreviation, extension);
+            msg = EnumChatFormatting.GREEN + I18n.format("commands.oredictdumpgeneric.success", entries.size(), abbreviation, extension);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = EnumChatFormatting.RED + "IOException! Check logs for raw array!";
+            msg = EnumChatFormatting.RED + I18n.format("commands.oredictdumpgeneric.ioexception");
         }
 
         sender.addChatMessage(new ChatComponentText(msg));
@@ -115,7 +113,7 @@ public class DumpModOresCommand implements ICommand {
     }
 
     @Override
-    public boolean isUsernameIndex(String[] p_82358_1_, int p_82358_2_) {
+    public boolean isUsernameIndex(String[] args, int index) {
         return false;
     }
 

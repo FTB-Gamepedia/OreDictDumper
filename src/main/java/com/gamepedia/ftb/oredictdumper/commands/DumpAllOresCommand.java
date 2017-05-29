@@ -2,17 +2,16 @@ package com.gamepedia.ftb.oredictdumper.commands;
 
 import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -34,7 +33,7 @@ public class DumpAllOresCommand implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "dumpallores <format>";
+        return I18n.format("commands.dumpallores.usage", Joiner.on(',').join(FORMATS));
     }
 
     @Override
@@ -75,12 +74,11 @@ public class DumpAllOresCommand implements ICommand {
             FileWriter writer = new FileWriter(dir);
             writer.write(string.toString());
             writer.close();
-            msg = EnumChatFormatting.GREEN +
-              String.format("Dumped %d entries to oredump.%s", entries.size(), format);
+            msg = EnumChatFormatting.GREEN + I18n.format("commands.oredictdumpgeneric.success", entries.size(), "oredump", format);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = EnumChatFormatting.RED + "IOException! Check logs for raw array!";
+            msg = EnumChatFormatting.RED + I18n.format("commands.oredictdumpgeneric.ioexception");
         }
 
         sender.addChatMessage(new ChatComponentText(msg));

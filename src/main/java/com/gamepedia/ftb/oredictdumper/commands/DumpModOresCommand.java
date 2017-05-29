@@ -4,17 +4,17 @@ import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,19 +22,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class DumpModOresCommand implements ICommand {
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "dumpmodores";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "dumpmodores <abbreviation> <modid> [format]";
     }
 
     @Override
-    public List<String> getCommandAliases() {
+    public List<String> getAliases() {
         return Collections.emptyList();
     }
 
@@ -97,7 +99,7 @@ public class DumpModOresCommand implements ICommand {
             msg = TextFormatting.RED + "IOException! Check logs for raw array!";
         }
 
-        sender.addChatMessage(new TextComponentString(msg));
+        sender.sendMessage(new TextComponentString(msg));
     }
 
     @Override
@@ -106,18 +108,17 @@ public class DumpModOresCommand implements ICommand {
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        return null;
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        return Collections.emptyList();
     }
 
     @Override
-    public boolean isUsernameIndex(String[] p_82358_1_, int p_82358_2_) {
+    public boolean isUsernameIndex(String[] args, int index) {
         return false;
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(ICommand o) {
-        return 0;
+        return getName().compareTo(o.getName());
     }
 }

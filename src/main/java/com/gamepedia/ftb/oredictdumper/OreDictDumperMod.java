@@ -5,6 +5,8 @@ import com.gamepedia.ftb.oredictdumper.commands.DumpModOresCommand;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -12,9 +14,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 
-@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "3.1.3", acceptedMinecraftVersions = "[1.9,1.10.2]")
+@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "3.1.3", acceptedMinecraftVersions = "[1.11,1.11.2]")
 public class OreDictDumperMod {
     @Mod.EventHandler
     public void registerCommand(FMLPostInitializationEvent event) {
@@ -31,15 +32,18 @@ public class OreDictDumperMod {
         ArrayList<OreDictEntry> entries = new ArrayList<>();
         for (String name : OreDictionary.getOreNames()) {
             for (ItemStack item : OreDictionary.getOres(name)) {
-                String modid = Item.REGISTRY.getNameForObject(item.getItem())
-                  .getResourceDomain();
+                ResourceLocation itemRL = Item.REGISTRY.getNameForObject(item.getItem());
+                if (itemRL == null) {
+                    continue;
+                }
+                String modid = itemRL.getResourceDomain();
 
                 if (id != null && !id.equals(modid)) {
                     continue;
                 }
 
                 if (item.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                    List<ItemStack> list = new ArrayList<>();
+                    NonNullList<ItemStack> list = NonNullList.create();
                     item.getItem().getSubItems(item.getItem(), null, list);
                     for (ItemStack is : list) {
                         entries.add(new OreDictEntry(name, is.getDisplayName(), is.getItemDamage(), modid));

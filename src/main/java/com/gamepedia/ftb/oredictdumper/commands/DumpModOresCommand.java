@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +33,7 @@ public class DumpModOresCommand implements ICommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "dumpmodores <abbreviation> <modid> [format]";
+        return I18n.format("commands.dumpmodores.usage", "wiki,csv,json" /* TODO: This is ugly, do something similar to DumpAllOresCommand */);
     }
 
     @Override
@@ -91,12 +92,12 @@ public class DumpModOresCommand implements ICommand {
             FileWriter writer = new FileWriter(dir);
             writer.write(builder.toString());
             writer.close();
-            msg = TextFormatting.GREEN + String.format("Dumped %d entries to %s.%s", entries.size(), abbreviation,
-              extension);
+            msg = TextFormatting.GREEN + I18n.format("commands.oredictdumpgeneric.success",
+              entries.size(), abbreviation, extension);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = TextFormatting.RED + "IOException! Check logs for raw array!";
+            msg = TextFormatting.RED + I18n.format("commands.oredictdumpgeneric.ioexception");
         }
 
         sender.sendMessage(new TextComponentString(msg));

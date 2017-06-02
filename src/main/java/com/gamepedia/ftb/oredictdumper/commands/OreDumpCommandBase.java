@@ -11,7 +11,10 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.StringUtils;
 
@@ -84,7 +87,7 @@ public abstract class OreDumpCommandBase implements ICommand {
             throw new WrongUsageException(getUnlocalizedCommandUsage(), StringUtils.join(getValidFormats(), ','));
         }
 
-        List<OreDictEntry> entries = getEntries(getModIDToSearch(args));
+        ImmutableList<OreDictEntry> entries = getEntries(getModIDToSearch(args));
         String fileName = getOutputFileName(args);
         String ext = outputFormat.getFileExtension();
         File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("%s.%s", fileName, ext));
@@ -112,8 +115,8 @@ public abstract class OreDumpCommandBase implements ICommand {
      * @return An array of OreDictEntries. Can be empty. Never null.
      */
     @Nonnull
-    private ArrayList<OreDictEntry> getEntries(@Nullable String id) {
-        ArrayList<OreDictEntry> entries = new ArrayList<>();
+    private ImmutableList<OreDictEntry> getEntries(@Nullable String id) {
+        List<OreDictEntry> entries = new ArrayList<>();
         for (String name : OreDictionary.getOreNames()) {
             for (ItemStack item : OreDictionary.getOres(name)) {
                 @SuppressWarnings("deprecation")
@@ -141,7 +144,7 @@ public abstract class OreDumpCommandBase implements ICommand {
             }
         }
 
-        return entries;
+        return ImmutableList.copyOf(entries);
     }
 
     @Override

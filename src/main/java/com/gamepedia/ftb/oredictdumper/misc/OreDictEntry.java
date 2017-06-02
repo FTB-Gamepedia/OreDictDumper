@@ -1,19 +1,44 @@
 package com.gamepedia.ftb.oredictdumper.misc;
 
-public class OreDictEntry {
-    public String tagName;
-    public String displayName;
-    public String modID;
-    public int metadata;
+import javax.annotation.Nonnull;
 
-    public OreDictEntry(String tag, String display, int meta, String mod) {
+public class OreDictEntry {
+    @Nonnull
+    private final String tagName;
+    @Nonnull
+    private final String displayName;
+    @Nonnull
+    private final String modID;
+    private final int metadata;
+
+    public OreDictEntry(@Nonnull String tag, @Nonnull String display, int meta, @Nonnull String mod) {
         tagName = tag;
         displayName = display;
         metadata = meta;
         modID = mod;
     }
 
+    @Nonnull
+    String getTagName() {
+        return tagName;
+    }
+
+    @Nonnull
+    String getDisplayName() {
+        return displayName;
+    }
+
+    @Nonnull
+    String getModID() {
+        return modID;
+    }
+
+    int getMetadata() {
+        return metadata;
+    }
+
+    @Override
     public String toString() {
-        return String.format("%s:%s@%s (%s)", modID, displayName, metadata, tagName);
+        return String.format("%s:%s@%s (%s)", getModID(), getDisplayName(), getMetadata(), getTagName());
     }
 }

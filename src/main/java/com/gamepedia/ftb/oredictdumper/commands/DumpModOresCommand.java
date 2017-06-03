@@ -70,16 +70,15 @@ public class DumpModOresCommand implements ICommand {
         switch (format) {
             case "wiki": {
                 for (OreDictEntry entry : entries) {
-                    builder.append(String.format("%s!%s!%s!\n", entry.tagName, entry
-                      .displayName, abbreviation));
+                    builder.append(String.format("%s!%s!%s!\n", entry.getTagName(), entry.getDisplayName(), abbreviation));
                 }
                 break;
             }
             case "csv": {
                 builder.append("Tag,ItemName,Metadata,ModID\n");
                 for (OreDictEntry entry : entries) {
-                    builder.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName,
-                      entry.metadata, entry.modID));
+                    builder.append(String.format("%s,%s,%s,%s\n", entry.getTagName(), entry.getDisplayName(),
+                      entry.getMetadata(), entry.getModID()));
                 }
                 extension = "csv";
                 break;

@@ -69,8 +69,8 @@ public class DumpAllOresCommand implements ICommand {
         } else if (format.equals("csv")) {
             string.append("Tag,ItemName,Metadata,ModID\n");
             for (OreDictEntry entry : entries) {
-                string.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName, entry.metadata,
-                  entry.modID));
+                string.append(String.format("%s,%s,%s,%s\n", entry.getTagName(), entry.getDisplayName(), entry.getMetadata(),
+                  entry.getModID()));
             }
         }
 

@@ -4,6 +4,7 @@ import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.ChatStyleColored;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
@@ -58,7 +59,7 @@ public class DumpAllOresCommand implements ICommand {
             throw new WrongUsageException("commands.dumpallores.usage", Joiner.on(',').join(FORMATS));
         }
 
-        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(null);
+        ImmutableList<OreDictEntry> entries = OreDictDumperMod.getEntries(null);
 
         File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("oredump.%s", format));
         StringBuilder string = new StringBuilder("");

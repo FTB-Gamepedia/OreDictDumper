@@ -2,6 +2,7 @@ package com.gamepedia.ftb.oredictdumper.commands;
 
 import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
+import com.gamepedia.ftb.oredictdumper.misc.StyleColored;
 import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,7 +14,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.File;
@@ -75,19 +77,21 @@ public class DumpAllOresCommand implements ICommand {
             }
         }
 
-        String msg;
+        ITextComponent msg;
         try {
             FileWriter writer = new FileWriter(dir);
             writer.write(string.toString());
             writer.close();
-            msg = TextFormatting.GREEN + I18n.format("commands.oredictdumpgeneric.success", entries.size(), "oredump", format);
+            msg = new TextComponentTranslation("commands.oredictdumpgeneric.success", entries.size(), "oredump", format)
+              .setStyle(new StyleColored(TextFormatting.GREEN));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = TextFormatting.RED + I18n.format("commands.oredictdumpgeneric.ioexception");
+            msg = new TextComponentTranslation("commands.oredictdumpgeneric.ioexception")
+              .setStyle(new StyleColored(TextFormatting.RED));
         }
 
-        sender.addChatMessage(new TextComponentString(msg));
+        sender.addChatMessage(msg);
     }
 
     @Override

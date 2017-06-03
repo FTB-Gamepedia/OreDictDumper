@@ -25,7 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class DumpAllOresCommand implements ICommand {
             throw new WrongUsageException("commands.dumpallores.usage", Joiner.on(',').join(FORMATS));
         }
 
-        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(null);
+        ImmutableList<OreDictEntry> entries = OreDictDumperMod.getEntries(null);
         File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("oredump.%s", format));
         StringBuilder string = new StringBuilder("");
 

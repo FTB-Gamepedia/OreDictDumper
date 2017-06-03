@@ -1,6 +1,7 @@
 package com.gamepedia.ftb.oredictdumper.commands;
 
 import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
+import com.gamepedia.ftb.oredictdumper.misc.ChatStyleColored;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,8 +12,9 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -62,7 +64,6 @@ public class DumpModOresCommand implements ICommand {
 
         ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(id);
 
-        String msg;
         StringBuilder builder = new StringBuilder();
         String extension = "txt";
 
@@ -95,18 +96,21 @@ public class DumpModOresCommand implements ICommand {
         File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("%s.%s",
           abbreviation, extension));
 
+        IChatComponent msg;
         try {
             FileWriter writer = new FileWriter(dir);
             writer.write(builder.toString());
             writer.close();
-            msg = EnumChatFormatting.GREEN + I18n.format("commands.oredictdumpgeneric.success", entries.size(), abbreviation, extension);
+            msg = new ChatComponentTranslation("commands.oredictdumpgeneric.success", entries.size(), abbreviation, extension)
+              .setChatStyle(new ChatStyleColored(EnumChatFormatting.GREEN));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(entries.toString());
-            msg = EnumChatFormatting.RED + I18n.format("commands.oredictdumpgeneric.ioexception");
+            msg = new ChatComponentTranslation("commands.oredictdumpgeneric.ioexception")
+              .setChatStyle(new ChatStyleColored(EnumChatFormatting.RED));
         }
 
-        sender.addChatMessage(new ChatComponentText(msg));
+        sender.addChatMessage(msg);
     }
 
     @Override

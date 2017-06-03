@@ -1,37 +1,16 @@
 package com.gamepedia.ftb.oredictdumper.commands;
 
-import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
-import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
-import com.gamepedia.ftb.oredictdumper.misc.StyleColored;
-import com.google.common.base.Joiner;
+import com.gamepedia.ftb.oredictdumper.misc.OreDictOutputFormat;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DumpAllOresCommand implements ICommand {
-    private static final ImmutableList<String> FORMATS = new ImmutableList.Builder<String>().add("json", "csv").build();
+public class DumpAllOresCommand extends OreDumpCommandBase {
+    private static final ImmutableList<String> FORMATS = ImmutableList.of("csv", "json");
 
     @Override
     public String getName() {
@@ -39,79 +18,50 @@ public class DumpAllOresCommand implements ICommand {
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
-        return I18n.format("commands.dumpallores.usage", Joiner.on(',').join(FORMATS));
+    protected String getUnlocalizedCommandUsage() {
+        return "commands.dumpallores.usage";
     }
 
     @Override
-    public List<String> getAliases() {
-        return Collections.emptyList();
+    protected int getFormatArgumentPosition() {
+        return 0;
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (!sender.getEntityWorld().isRemote) {
-            return;
-        }
+    protected ImmutableList<String> getValidFormats() {
+        return FORMATS;
+    }
 
-        if (args.length != 1) {
-            throw new WrongUsageException("commands.dumpallores.usage", Joiner.on(',').join(FORMATS));
-        }
+    @Override
+    protected int getRequiredNumberOfArguments() {
+        return 1;
+    }
 
-        String format = args[0].toLowerCase();
+    @Override
+    protected String getOutputFileName(String[] args) {
+        return "oredump";
+    }
 
-        if (!FORMATS.contains(format)) {
-            throw new WrongUsageException("commands.dumpallores.usage", Joiner.on(',').join(FORMATS));
-        }
+    @Nullable
+    @Override
+    protected String getModIDToSearch(String[] args) {
+        return null;
+    }
 
-        ImmutableList<OreDictEntry> entries = OreDictDumperMod.getEntries(null);
-        File dir = new File(Minecraft.getMinecraft().mcDataDir, String.format("oredump.%s", format));
-        StringBuilder string = new StringBuilder("");
-
-        if (format.equals("json")) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            string.append(gson.toJson(entries));
-        } else if (format.equals("csv")) {
-            string.append("Tag,ItemName,Metadata,ModID\n");
-            for (OreDictEntry entry : entries) {
-                string.append(String.format("%s,%s,%s,%s\n", entry.getTagName(), entry.getDisplayName(), entry.getMetadata(),
-                  entry.getModID()));
+    @Nullable
+    @Override
+    protected OreDictOutputFormat getOutputFormat(String[] args) {
+        String formatArg = args[getFormatArgumentPosition()];
+        switch (formatArg) {
+            case "json": {
+                return new OreDictOutputFormat.JSONOutputFormat();
+            }
+            case "csv": {
+                return new OreDictOutputFormat.CSVOutputFormat();
+            }
+            default: {
+                return null;
             }
         }
-
-        ITextComponent msg;
-        try {
-            FileWriter writer = new FileWriter(dir);
-            writer.write(string.toString());
-            writer.close();
-            msg = new TextComponentTranslation("commands.oredictdumpgeneric.success", entries.size(), "oredump", format)
-              .setStyle(new StyleColored(TextFormatting.GREEN));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(entries.toString());
-            msg = new TextComponentTranslation("commands.oredictdumpgeneric.ioexception").setStyle(new StyleColored(TextFormatting.RED));
-        }
-
-        sender.sendMessage(msg);
-    }
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index) {
-        return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return getName().compareTo(o.getName());
     }
 }

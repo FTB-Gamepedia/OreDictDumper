@@ -3,6 +3,7 @@ package com.gamepedia.ftb.oredictdumper.commands;
 import com.gamepedia.ftb.oredictdumper.OreDictDumperMod;
 import com.gamepedia.ftb.oredictdumper.misc.OreDictEntry;
 import com.gamepedia.ftb.oredictdumper.misc.StyleColored;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,6 @@ import net.minecraft.util.text.TextFormatting;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class DumpModOresCommand implements ICommand {
             }
         }
 
-        ArrayList<OreDictEntry> entries = OreDictDumperMod.getEntries(id);
+        ImmutableList<OreDictEntry> entries = OreDictDumperMod.getEntries(id);
 
         StringBuilder builder = new StringBuilder();
         String extension = "txt";

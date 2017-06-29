@@ -12,6 +12,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -134,7 +135,7 @@ public abstract class OreDumpCommandBase implements ICommand {
 
                 if (item.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
                     NonNullList<ItemStack> list = NonNullList.create();
-                    item.getItem().getSubItems(item.getItem(), null, list);
+                    item.getItem().getSubItems(CreativeTabs.SEARCH, list);
                     for (ItemStack is : list) {
                         entries.add(new OreDictEntry(name, is.getDisplayName(), is.getItemDamage(), modid));
                     }

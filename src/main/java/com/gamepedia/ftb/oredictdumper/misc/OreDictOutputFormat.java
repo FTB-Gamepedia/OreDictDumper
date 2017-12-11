@@ -46,7 +46,7 @@ public abstract class OreDictOutputFormat {
             StringBuilder builder = new StringBuilder();
             builder.append("Tag,ItemName,Metadata,ModID\n");
             for (OreDictEntry entry : entries) {
-                builder.append(String.format("%s,%s,%s,%s\n", entry.getTagName(), entry.getDisplayName(), entry.getMetadata(), entry.getModID()));
+                builder.append(String.format("%s,%s,%s,%s\n", entry.tagName, entry.displayName, entry.metadata, entry.modID));
             }
             return builder.toString();
         }
@@ -65,7 +65,7 @@ public abstract class OreDictOutputFormat {
         public String parseEntries(ImmutableList<OreDictEntry> entries) {
             StringBuilder builder = new StringBuilder();
             for (OreDictEntry entry : entries) {
-                builder.append(String.format("%s!%s!%s!\n", entry.getTagName(), entry.getDisplayName(), abbreviation));
+                builder.append(String.format("%s!%s!%s!\n", entry.tagName, entry.displayName, abbreviation));
             }
             return builder.toString();
         }

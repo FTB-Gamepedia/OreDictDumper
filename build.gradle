@@ -19,7 +19,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "3.2.1"
+version = "3.3.0"
 group = "com.gamepedia.ftb.oredictdumper"
 archivesBaseName = "OreDictDumper-1.9"
 

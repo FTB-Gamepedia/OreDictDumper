@@ -64,7 +64,7 @@ public class DumpModOresCommand extends OreDumpCommandBase {
                 if (args.length != 3) {
                     return null;
                 }
-                return new OreDictOutputFormat.WikiOutputFormat(args[0]);
+                return new OreDictOutputFormat.WikiOutputFormat(args[2]);
             }
             default: {
                 return null;

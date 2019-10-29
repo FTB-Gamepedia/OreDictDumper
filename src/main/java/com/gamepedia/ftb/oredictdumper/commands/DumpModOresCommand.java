@@ -22,7 +22,7 @@ public class DumpModOresCommand extends OreDumpCommandBase {
 
     @Override
     protected int getFormatArgumentPosition() {
-        return 2;
+        return 1;
     }
 
     @Nonnull
@@ -33,7 +33,8 @@ public class DumpModOresCommand extends OreDumpCommandBase {
 
     @Override
     protected int getRequiredNumberOfArguments() {
-        return 3;
+        // 2 required for non-wiki formats, 3 required for wiki formats
+        return 2;
     }
 
     @Nonnull
@@ -45,7 +46,7 @@ public class DumpModOresCommand extends OreDumpCommandBase {
     @Nullable
     @Override
     protected String getModIDToSearch(String[] args) {
-        return args[1];
+        return args[0];
     }
 
     @Nullable
@@ -60,6 +61,9 @@ public class DumpModOresCommand extends OreDumpCommandBase {
                 return new OreDictOutputFormat.CSVOutputFormat();
             }
             case "wiki": {
+                if (args.length != 3) {
+                    return null;
+                }
                 return new OreDictOutputFormat.WikiOutputFormat(args[0]);
             }
             default: {

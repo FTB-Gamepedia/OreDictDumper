@@ -6,7 +6,7 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "4.0.1", acceptedMinecraftVersions = "[1.11,1.11.2]", clientSideOnly = true)
+@Mod(modid = "oredictdumper", name = "OreDictDumper", version = "4.1.0", acceptedMinecraftVersions = "[1.11,1.11.2]", clientSideOnly = true)
 public class OreDictDumperMod {
     @Mod.EventHandler
     public void registerCommand(FMLPostInitializationEvent event) {

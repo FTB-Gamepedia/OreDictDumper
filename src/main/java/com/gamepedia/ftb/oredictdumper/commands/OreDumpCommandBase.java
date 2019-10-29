@@ -79,7 +79,7 @@ public abstract class OreDumpCommandBase implements ICommand {
             return;
         }
 
-        if (args.length != getRequiredNumberOfArgumnets()) {
+        if (args.length < getRequiredNumberOfArgumnets()) {
             throw new WrongUsageException(getUnlocalizedCommandUsage(), Joiner.on(',').join(getValidFormats()));
         }
 

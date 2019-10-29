@@ -2,6 +2,8 @@ package com.gamepedia.ftb.oredictdumper.commands;
 
 import com.gamepedia.ftb.oredictdumper.misc.OreDictOutputFormat;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.command.WrongUsageException;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,7 +24,7 @@ public class DumpModOresCommand extends OreDumpCommandBase {
 
     @Override
     protected int getFormatArgumentPosition() {
-        return 2;
+        return 1;
     }
 
     @Nonnull
@@ -33,7 +35,8 @@ public class DumpModOresCommand extends OreDumpCommandBase {
 
     @Override
     protected int getRequiredNumberOfArguments() {
-        return 3;
+        // 2 required for non-wiki formats, 3 required for wiki formats
+        return 2;
     }
 
     @Nonnull
@@ -45,7 +48,7 @@ public class DumpModOresCommand extends OreDumpCommandBase {
     @Nullable
     @Override
     protected String getModIDToSearch(String[] args) {
-        return args[1];
+        return args[0];
     }
 
     @Nullable
@@ -60,7 +63,10 @@ public class DumpModOresCommand extends OreDumpCommandBase {
                 return new OreDictOutputFormat.CSVOutputFormat();
             }
             case "wiki": {
-                return new OreDictOutputFormat.WikiOutputFormat(args[0]);
+                if (args.length != 3) {
+                    throw new WrongUsageException(getUnlocalizedCommandUsage(), StringUtils.join(getValidFormats(), ','));
+                }
+                return new OreDictOutputFormat.WikiOutputFormat(args[2]);
             }
             default: {
                 return null;

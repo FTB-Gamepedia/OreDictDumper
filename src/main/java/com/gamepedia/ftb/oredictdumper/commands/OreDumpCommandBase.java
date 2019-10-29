@@ -50,7 +50,7 @@ public abstract class OreDumpCommandBase implements ICommand {
     /**
      * @return The number of arguments that are required for the command to be successfully executed
      */
-    protected abstract int getRequiredNumberOfArgumnets();
+    protected abstract int getRequiredNumberOfArguments();
 
     /**
      * @param args The list of arguments passed to the command
@@ -79,7 +79,7 @@ public abstract class OreDumpCommandBase implements ICommand {
             return;
         }
 
-        if (args.length < getRequiredNumberOfArgumnets()) {
+        if (args.length < getRequiredNumberOfArguments()) {
             throw new WrongUsageException(getUnlocalizedCommandUsage(), Joiner.on(',').join(getValidFormats()));
         }
 

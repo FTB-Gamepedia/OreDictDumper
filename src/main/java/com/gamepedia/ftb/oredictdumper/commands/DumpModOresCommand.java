@@ -32,7 +32,7 @@ public class DumpModOresCommand extends OreDumpCommandBase {
     }
 
     @Override
-    protected int getRequiredNumberOfArgumnets() {
+    protected int getRequiredNumberOfArguments() {
         // 2 required for non-wiki formats, 3 required for wiki formats
         return 2;
     }

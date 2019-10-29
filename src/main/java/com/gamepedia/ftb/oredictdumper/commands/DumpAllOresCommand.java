@@ -32,7 +32,7 @@ public class DumpAllOresCommand extends OreDumpCommandBase {
     }
 
     @Override
-    protected int getRequiredNumberOfArgumnets() {
+    protected int getRequiredNumberOfArguments() {
         return 1;
     }
 

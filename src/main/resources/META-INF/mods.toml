@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[33,)"
+license="MIT License"
+issueTrackerURL="https://github.com/FTB-Gamepedia/OreDictDumper"
+
+[[mods]]
+modId="oredictdumper"
+version="${file.jarVersion}"
+displayName="${project.name}"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/oredictdumper"
+authors="TheSatanicSanta, SizableShrimp"
+description="""This is a simple Minecraft mod for easily dumping all tag entries that are loaded or within a specific mod.
+Format outputs include JSON, CSV, and Wiki.
+Wiki format outputs the dumps exactly as the OreDict MediaWiki extension's ImportOreDict special page expects."""
+
+[[dependencies.oredictdumper]]
+	modId="forge"
+	mandatory=true
+	versionRange="[33,)"
+	ordering="NONE"
+	side="BOTH"
+
+[[dependencies.oredictdumper]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.16.2,)"
+	ordering="NONE"
+	side="BOTH"

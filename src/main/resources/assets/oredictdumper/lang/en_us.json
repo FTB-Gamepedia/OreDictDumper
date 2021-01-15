@@ -1,0 +1,7 @@
+{
+  "commands.dumptags.success": "Dumped %d entries to %s.",
+  "commands.dumptags.namespace.tooltip": "This should be the namespace of the tags to dump; the mod's item prefix.",
+  "commands.dumptags.namespace.invalid": "\"%s\" has no registered tags.",
+  "commands.dumptags.no_parse": "Format was not one of %s.",
+  "commands.dumptags.exception": "An Exception occurred while attempting to write file %s. Please check logs."
+}

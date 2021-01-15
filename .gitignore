@@ -1,9 +1,15 @@
-.gradle/
+# Gradle
+/.gradle
+/build
+
+# IntelliJ IDEA
 *.iml
 *.ipr
 *.iws
-eclipse/
-gradle/
-gradlew
-gradlew.bat
-out/
+/.idea
+
+# Forge
+/run
+/logs
+/eclipse
+/out

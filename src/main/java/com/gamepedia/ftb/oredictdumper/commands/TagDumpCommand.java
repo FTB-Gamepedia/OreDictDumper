@@ -24,8 +24,8 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -88,7 +88,7 @@ public abstract class TagDumpCommand {
         List<TagEntry> entries = getEntries(namespace);
         if (entries.isEmpty()) {
             // The namespace isn't valid if this is empty as vanilla always adds some tags
-            throw new SimpleCommandExceptionType(new TextComponentTranslation("commands.dumptags.namespace.invalid", namespace)).create();
+            throw new SimpleCommandExceptionType(new TranslationTextComponent("commands.dumptags.namespace.invalid", namespace)).create();
         }
 
         TagFormat tagFormat = TagFormat.FORMATS.get(format);
@@ -103,13 +103,13 @@ public abstract class TagDumpCommand {
             Files.createDirectories(complete.getParent());
             Files.write(complete, tagFormat.parseEntries(entries, context).getBytes(StandardCharsets.UTF_8));
 
-            ITextComponent message = new TextComponentTranslation("commands.dumptags.success", entries.size(), relative)
+            ITextComponent message = new TranslationTextComponent("commands.dumptags.success", entries.size(), relative)
                     .applyTextStyle(TextFormatting.GREEN);
             source.sendFeedback(message, false);
         } catch (IOException e) {
             OreDictDumper.LOGGER.error("Error while dumping tag entries {}", entries, e);
 
-            ITextComponent message = new TextComponentTranslation("commands.dumptags.exception", relative);
+            ITextComponent message = new TranslationTextComponent("commands.dumptags.exception", relative);
             source.sendErrorMessage(message);
         }
     }
@@ -161,7 +161,7 @@ public abstract class TagDumpCommand {
             String str = reader.readUnquotedString().toLowerCase();
             if (!formats.contains(str)) {
                 String possible = String.join(", ", formats);
-                throw new SimpleCommandExceptionType(new TextComponentTranslation("commands.dumptags.no_parse", possible)).create();
+                throw new SimpleCommandExceptionType(new TranslationTextComponent("commands.dumptags.no_parse", possible)).create();
             }
 
             return str;

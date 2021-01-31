@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[33,)"
+loaderVersion="[25,)"
 license="MIT License"
 issueTrackerURL="https://github.com/FTB-Gamepedia/OreDictDumper"
 
@@ -16,13 +16,13 @@ Wiki format outputs the dumps exactly as the OreDict MediaWiki extension's Impor
 [[dependencies.oredictdumper]]
 	modId="forge"
 	mandatory=true
-	versionRange="[33,)"
+	versionRange="[25,)"
 	ordering="NONE"
 	side="BOTH"
 
 [[dependencies.oredictdumper]]
 	modId="minecraft"
 	mandatory=true
-	versionRange="[1.16.2,)"
+	versionRange="[1.13.2,)"
 	ordering="NONE"
 	side="BOTH"

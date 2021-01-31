@@ -19,14 +19,15 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -61,13 +62,13 @@ public abstract class TagDumpCommand {
     }
 
     private final FormatArgumentType formatType = new FormatArgumentType(getFormats());
-    protected Map<String, ModContainer> namespaces;
+    protected Map<String, ModInfo> namespaces;
 
     protected final void registerInternal(CommandDispatcher<CommandSource> commandDispatcher) {
         LiteralArgumentBuilder<CommandSource> sub = literal(this.getName());
-        namespaces = ModList.get().applyForEachModContainer(Function.identity())
+        namespaces = ModList.get().getMods().stream()
                 .filter(mod -> mod.getNamespace() != null)
-                .collect(Collectors.toMap(ModContainer::getNamespace, Function.identity()));
+                .collect(Collectors.toMap(ModInfo::getNamespace, Function.identity()));
 
         ArgumentBuilder<CommandSource, ?> modified = modifyBaseBuilder(sub)
                 .then(argument("format", formatType)
@@ -87,7 +88,7 @@ public abstract class TagDumpCommand {
         List<TagEntry> entries = getEntries(namespace);
         if (entries.isEmpty()) {
             // The namespace isn't valid if this is empty as vanilla always adds some tags
-            throw new SimpleCommandExceptionType(new TranslationTextComponent("commands.dumptags.namespace.invalid", namespace)).create();
+            throw new SimpleCommandExceptionType(new TextComponentTranslation("commands.dumptags.namespace.invalid", namespace)).create();
         }
 
         TagFormat tagFormat = TagFormat.FORMATS.get(format);
@@ -102,13 +103,13 @@ public abstract class TagDumpCommand {
             Files.createDirectories(complete.getParent());
             Files.write(complete, tagFormat.parseEntries(entries, context).getBytes(StandardCharsets.UTF_8));
 
-            ITextComponent message = new TranslationTextComponent("commands.dumptags.success", entries.size(), relative)
-                    .mergeStyle(TextFormatting.GREEN);
+            ITextComponent message = new TextComponentTranslation("commands.dumptags.success", entries.size(), relative)
+                    .applyTextStyle(TextFormatting.GREEN);
             source.sendFeedback(message, false);
         } catch (IOException e) {
             OreDictDumper.LOGGER.error("Error while dumping tag entries {}", entries, e);
 
-            ITextComponent message = new TranslationTextComponent("commands.dumptags.exception", relative);
+            ITextComponent message = new TextComponentTranslation("commands.dumptags.exception", relative);
             source.sendErrorMessage(message);
         }
     }
@@ -116,15 +117,16 @@ public abstract class TagDumpCommand {
     private List<TagEntry> getEntries(String namespace) {
         List<TagEntry> entries = new ArrayList<>();
 
-        addEntries(namespace, entries, ItemTags.getAllTags(), Function.identity());
-        addEntries(namespace, entries, BlockTags.getAllTags(), Block::asItem);
+        addEntries(namespace, entries, ItemTags.getCollection(), Function.identity());
+        addEntries(namespace, entries, BlockTags.getCollection(), Block::asItem);
 
         return entries;
     }
 
-    private <T extends ForgeRegistryEntry<T>> void addEntries(String namespace, List<TagEntry> entries, List<? extends ITag.INamedTag<T>> tags, Function<T, Item> func) {
-        for (ITag.INamedTag<T> tag : tags) {
-            String tagName = tag.getName().toString();
+    private <T extends ForgeRegistryEntry<T>> void addEntries(String namespace, List<TagEntry> entries, TagCollection<T> tags, Function<T, Item> func) {
+        for (Map.Entry<ResourceLocation, Tag<T>> entry : tags.getTagMap().entrySet()) {
+            String tagName = entry.getKey().toString();
+            Tag<T> tag = entry.getValue();
 
             for (T registryItem : tag.getAllElements()) {
                 ResourceLocation resource = registryItem.getRegistryName();
@@ -159,7 +161,7 @@ public abstract class TagDumpCommand {
             String str = reader.readUnquotedString().toLowerCase();
             if (!formats.contains(str)) {
                 String possible = String.join(", ", formats);
-                throw new SimpleCommandExceptionType(new TranslationTextComponent("commands.dumptags.no_parse", possible)).create();
+                throw new SimpleCommandExceptionType(new TextComponentTranslation("commands.dumptags.no_parse", possible)).create();
             }
 
             return str;

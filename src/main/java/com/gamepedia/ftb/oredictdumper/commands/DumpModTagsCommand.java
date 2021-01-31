@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -44,7 +44,7 @@ public class DumpModTagsCommand extends TagDumpCommand {
     protected RequiredArgumentBuilder<CommandSource, String> modifyBaseBuilder(LiteralArgumentBuilder<CommandSource> builder) {
         return argument("namespace", StringArgumentType.word())
                 .suggests((context, suggestionsBuilder) -> {
-                    ITextComponent message = new TranslationTextComponent("commands.dumptags.namespace.tooltip");
+                    ITextComponent message = new TextComponentTranslation("commands.dumptags.namespace.tooltip");
                     for (String namespace : namespaces.keySet()) {
                         suggestionsBuilder.suggest(namespace, message);
                     }

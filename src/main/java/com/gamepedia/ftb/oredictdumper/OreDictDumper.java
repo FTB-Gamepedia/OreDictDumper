@@ -4,14 +4,13 @@ import com.gamepedia.ftb.oredictdumper.commands.DumpAllTagsCommand;
 import com.gamepedia.ftb.oredictdumper.commands.DumpModTagsCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,14 +26,14 @@ public class OreDictDumper {
                 (remote, isNetwork) -> isNetwork // I accept anything from the server, by returning true if it's asking about the server
         ));
         // IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.addListener(this::registerCommands));
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.addListener(this::registerCommands));
     }
 
-    private void registerCommands(RegisterCommandsEvent event) {
-        if (event.getEnvironment() != Commands.EnvironmentType.INTEGRATED)
+    private void registerCommands(FMLServerStartingEvent event) {
+        if (event.getServer().isDedicatedServer())
             return;
 
-        CommandDispatcher<CommandSource> commandDispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSource> commandDispatcher = event.getCommandDispatcher();
         DumpAllTagsCommand.register(commandDispatcher);
         DumpModTagsCommand.register(commandDispatcher);
     }
